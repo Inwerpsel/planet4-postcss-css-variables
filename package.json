@@ -11,7 +11,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MadLittleMods/postcss-css-variables.git"
+    "url": "https://github.com/Inwerpsel/postcss-css-variables.git"
   },
   "dependencies": {
     "balanced-match": "^1.0.0",

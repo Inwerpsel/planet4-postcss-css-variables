@@ -13,6 +13,8 @@ var shallowCloneNode = require("./lib/shallow-clone-node");
 var resolveValue = require("./lib/resolve-value");
 var resolveDecl = require("./lib/resolve-decl");
 
+const fs = require('fs');
+
 // A custom property is any property whose name starts with two dashes (U+002D HYPHEN-MINUS)
 // `--foo`
 // See: http://dev.w3.org/csswg/css-variables/#custom-property
@@ -61,11 +63,17 @@ var defaults = {
   preserveInjectedVariables: true,
   // Will write media queries in the same order as in the original file.
   // Currently defaulted to false for legacy behavior. We can update to `true` in a major version
-  preserveAtRulesOrder: false
+  preserveAtRulesOrder: false,
+  // Export all var statement usages to a file.
+  exportVarUsagesTo: null,
 };
 
 module.exports = postcss.plugin("postcss-css-variables", function(options) {
   var opts = extend({}, defaults, options);
+
+  if ( !['object'].includes( typeof opts.exportVarUsagesTo ) ) {
+    throw new Error('`exportVarUsagesTo` must be a valid location.')
+  }
 
   // Work with opts here
 
@@ -217,25 +225,28 @@ module.exports = postcss.plugin("postcss-css-variables", function(options) {
       if (rule.nodes === undefined) return;
 
       var doesRuleUseVariables = rule.nodes.some(function(node) {
-        if (node.type === "decl") {
-          var decl = node;
-          // If it uses variables
-          // and is not a variable declarations that we may be preserving from earlier
-          if (
-            resolveValue.RE_VAR_FUNC.test(decl.value) &&
-            !RE_VAR_PROP.test(decl.prop)
-          ) {
-            return true;
-          }
-        }
-
-        return false;
+        // If it uses variables
+        // and is not a variable declarations that we may be preserving from earlier
+        return node.type === "decl"
+            && resolveValue.RE_VAR_FUNC.test( node.value )
+            && !RE_VAR_PROP.test( node.prop )
       });
 
       if (doesRuleUseVariables) {
         rulesThatHaveDeclarationsWithVariablesList.push(rule);
       }
     });
+
+    const allVars = {}
+
+    const shouldExport = () => !!opts.exportVarUsagesTo
+
+    const collectVar = !shouldExport() ? null : ( cssVar ) => {
+      if ( !allVars[ cssVar.name ] ) {
+        allVars[ cssVar.name ] = { usages: []};
+      }
+      allVars[ cssVar.name ].usages.push(cssVar.usage);
+    }
 
     rulesThatHaveDeclarationsWithVariablesList.forEach(function(rule) {
       var rulesToWorkOn = [].concat(rule);
@@ -256,16 +267,20 @@ module.exports = postcss.plugin("postcss-css-variables", function(options) {
       // Resolve the declarations
       rulesToWorkOn.forEach(function(ruleToWorkOn) {
         ruleToWorkOn.nodes.slice(0).forEach(function(node) {
-          if (node.type === "decl") {
-            var decl = node;
-            resolveDecl(
-              decl,
-              map,
-              opts.preserve,
-              opts.preserveAtRulesOrder,
-              logResolveValueResult
-            );
+          if ( node.type !== "decl" ) {
+            return;
           }
+          let preserveAtRulesOrder;
+          resolveDecl(
+              node,
+              map,
+              {
+                shouldPreserve: opts.preserve,
+                preserveAtRulesOrder: opts.preserveAtRulesOrder,
+                logResolveValueResult,
+                collectVar,
+              },
+          );
         });
       });
     });
@@ -278,6 +293,19 @@ module.exports = postcss.plugin("postcss-css-variables", function(options) {
     injectedDeclsToRemoveAtEnd.forEach(function(injectedDecl) {
       injectedDecl.remove();
     });
+
+    // Merge variables with the ones that are already in the passed object.
+    if ( opts.exportVarUsagesTo && allVars ) {
+      Object.keys( allVars ).forEach( varName => {
+        if ( 'undefined' === typeof opts.exportVarUsagesTo[ varName ] ) {
+          opts.exportVarUsagesTo[ varName ] = {
+            name: varName,
+            usages: [],
+          };
+        }
+        opts.exportVarUsagesTo[ varName ].usages.push( ...allVars[ varName ].usages );
+      } );
+    }
 
     //console.log('map', map);
 
