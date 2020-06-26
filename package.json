@@ -1,13 +1,13 @@
 {
-  "name": "postcss-css-variables",
-  "version": "0.17.0",
-  "description": "PostCSS plugin to transform CSS Custom Properties(CSS variables) syntax into a static representation",
+  "name": "postcss-css-variables-extract",
+  "version": "0.1.0",
+  "description": "PostCSS plugin to transform CSS Custom Properties(CSS variables) syntax into a static representation, with some added scripts to extract locations in scss files.",
   "keywords": [
     "postcss",
     "css",
     "postcss-plugin"
   ],
-  "author": "Eric Eastwood <contact@ericeastwood.com> (http://ericeastwood.com/)",
+  "author": "Pieter Vincent <pvincent@greenpeace.org>",
   "license": "MIT",
   "repository": {
     "type": "git",
