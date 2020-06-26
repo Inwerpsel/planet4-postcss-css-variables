@@ -17,7 +17,8 @@
     "balanced-match": "^1.0.0",
     "escape-string-regexp": "^1.0.3",
     "extend": "^3.0.1",
-    "postcss": "^6.0.8"
+    "postcss": "^6.0.8",
+    "shallow-equal": "^1.2.1"
   },
   "devDependencies": {
     "bluebird": "^3.5.0",

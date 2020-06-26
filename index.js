@@ -306,15 +306,5 @@ module.exports = postcss.plugin("postcss-css-variables", function(options) {
         opts.exportVarUsagesTo[ varName ].usages.push( ...allVars[ varName ].usages );
       } );
     }
-
-    //console.log('map', map);
-
-    /* * /
-		}
-		catch(e) {
-			//console.log('e', e.message);
-			console.log('e', e.message, e.stack);
-		}
-		/* */
   };
 });
