@@ -1,4 +1,9 @@
-# PostCSS CSS Variables
+# PostCSS CSS Variables extract
+
+IMPORTANT NOTE: This is a fork from https://github.com/MadLittleMods/postcss-css-variables, so virtually all credit goes to the author.
+I only added a way to extract any `var()` usages, as I couldn't find another plugin that did this and this one came closest.
+So the rest of this README is just from the original repository. I don't recommend using this package in production yet,
+it's likely to change in a breaking way, or might get abandoned for another solution.
 
 [![npm version](https://badge.fury.io/js/postcss-css-variables.svg)](http://badge.fury.io/js/postcss-css-variables) [![Build Status](https://travis-ci.org/MadLittleMods/postcss-css-variables.svg)](https://travis-ci.org/MadLittleMods/postcss-css-variables) [![Gitter](https://badges.gitter.im/MadLittleMods/postcss-css-variables.svg)](https://gitter.im/MadLittleMods/postcss-css-variables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 

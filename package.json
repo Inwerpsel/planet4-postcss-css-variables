@@ -1,6 +1,6 @@
 {
   "name": "postcss-css-variables-extract",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "PostCSS plugin to transform CSS Custom Properties(CSS variables) syntax into a static representation, with some added scripts to extract locations in scss files.",
   "keywords": [
     "postcss",
