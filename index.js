@@ -270,7 +270,6 @@ module.exports = postcss.plugin("postcss-css-variables", function(options) {
           if ( node.type !== "decl" ) {
             return;
           }
-          let preserveAtRulesOrder;
           resolveDecl(
               node,
               map,
@@ -296,15 +295,7 @@ module.exports = postcss.plugin("postcss-css-variables", function(options) {
 
     // Merge variables with the ones that are already in the passed object.
     if ( opts.exportVarUsagesTo && allVars ) {
-      Object.keys( allVars ).forEach( varName => {
-        if ( 'undefined' === typeof opts.exportVarUsagesTo[ varName ] ) {
-          opts.exportVarUsagesTo[ varName ] = {
-            name: varName,
-            usages: [],
-          };
-        }
-        opts.exportVarUsagesTo[ varName ].usages.push( ...allVars[ varName ].usages );
-      } );
+      opts.exportVarUsagesTo[result.opts.from] = allVars;
     }
   };
 });
