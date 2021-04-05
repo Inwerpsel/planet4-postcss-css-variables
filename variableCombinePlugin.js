@@ -16,7 +16,7 @@ module.exports = ({allCssVars, filename}) => ( {
                 fs.writeFile(
                     `${filename || 'css-variables.json'}`,
                     JSON.stringify(vars, null, 2),
-                    err => console.log('ERROR writing file', err)
+                    err => !!err && console.log('ERROR writing file', err)
                 );
             });
         }
