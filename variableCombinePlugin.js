@@ -1,4 +1,5 @@
 const fs = require('fs');
+const mergeVarUsages = require('./lib/merge-var-usages');
 
 module.exports = ({allCssVars, filename}) => ( {
         apply: (compiler) => {
@@ -15,7 +16,7 @@ module.exports = ({allCssVars, filename}) => ( {
                 }, {});
                 fs.writeFile(
                     `${filename || 'css-variables.json'}`,
-                    JSON.stringify(vars, null, 2),
+                    JSON.stringify(mergeVarUsages(vars, {}), null, 2),
                     err => !!err && console.log('ERROR writing file', err)
                 );
             });
